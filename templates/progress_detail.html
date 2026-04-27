@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}{{ level.title }} - 记录详情{% endblock %}
+{% block content %}
+<section class="detail-header">
+    <div>
+        <p class="eyebrow">Level Record</p>
+        <h2>{{ level.title }} 记录详情</h2>
+        <p>{{ level.english_text }} / {{ level.translation }}</p>
+    </div>
+    <a class="secondary-btn" href="{{ url_for('progress_list') }}">返回记录列表</a>
+</section>
+
+<section class="table-card">
+    {% if records %}
+    <table>
+        <thead>
+            <tr>
+                <th>时间</th>
+                <th>第一块</th>
+                <th>第二块</th>
+                <th>是否完成关卡</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in records %}
+            <tr>
+                <td>{{ record.updated_at }}</td>
+                <td>{{ '通过' if record.stage_one_success else '失败' }}</td>
+                <td>{{ '通过' if record.stage_two_success else '失败' }}</td>
+                <td>{{ '完成' if record.is_completed else '未完成' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="placeholder-box">这个关卡还没有闯关记录。</div>
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% if level %}
+    {% set page_title = '编辑关卡' %}
+{% else %}
+    {% set page_title = '新增关卡' %}
+{% endif %}
+{% block title %}{{ page_title }}{% endblock %}
+{% block content %}
+<section class="detail-header">
+    <div>
+        <p class="eyebrow">Content Editor</p>
+        <h2>{{ page_title }}</h2>
+        <p>请填写本关卡的英语句子、正确翻译、候选选项和动画视频链接。</p>
+    </div>
+    <a class="secondary-btn" href="{{ url_for('settings') }}">返回设置页</a>
+</section>
+
+<section class="form-card">
+    <form method="post" class="editor-form">
+        <label for="title">关卡标题</label>
+        <input id="title" name="title" type="text" value="{{ form.get('title', '') }}" required>
+
+        <label for="english_text">英语内容</label>
+        <textarea id="english_text" name="english_text" rows="3" required>{{ form.get('english_text', '') }}</textarea>
+
+        <label for="translation">正确翻译</label>
+        <input id="translation" name="translation" type="text" value="{{ form.get('translation', '') }}" required>
+
+        <label for="options">候选选项（每行一个，至少 3 个，必须包含正确翻译）</label>
+        <textarea id="options" name="options" rows="6" required>{{ form.get('options', '') }}</textarea>
+
+        <label class="checkbox-row" for="has_video">
+            <input
+                id="has_video"
+                name="has_video"
+                type="checkbox"
+                {% if form.get('has_video') in ['on', True, 1, '1'] %}checked{% endif %}
+            >
+            <span>本关包含动画片内容</span>
+        </label>
+
+        <label for="video_url">动画片视频链接（如果勾选了动画片再填写）</label>
+        <input id="video_url" name="video_url" type="url" value="{{ form.get('video_url', '') }}">
+
+        <button type="submit" class="primary-btn">保存关卡</button>
+    </form>
+</section>
+{% endblock %}

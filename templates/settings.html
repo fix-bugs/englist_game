@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}设置页面{% endblock %}
+{% block content %}
+<section class="detail-header">
+    <div>
+        <p class="eyebrow">Settings</p>
+        <h2>关卡内容设置</h2>
+        <p>可以新增或编辑每一关的英语内容、翻译选项和动画片链接。</p>
+    </div>
+    <a class="primary-btn" href="{{ url_for('create_level') }}">新增关卡</a>
+</section>
+
+<section class="card-grid">
+    {% for level in levels %}
+    <article class="card">
+        <span class="card-tag">关卡 {{ level.id }}</span>
+        <h3>{{ level.title }}</h3>
+        <p><strong>英语：</strong>{{ level.english_text }}</p>
+        <p><strong>翻译：</strong>{{ level.translation }}</p>
+        <p><strong>动画片：</strong>{{ '有' if level.has_video else '无' }}</p>
+        <a class="secondary-btn" href="{{ url_for('edit_level', level_id=level.id) }}">编辑内容</a>
+    </article>
+    {% endfor %}
+</section>
+{% endblock %}

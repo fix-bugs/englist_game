@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}关卡列表{% endblock %}
+{% block content %}
+<section class="hero-card">
+    <div>
+        <p class="eyebrow">Fun English Adventure</p>
+        <h2>选择一个关卡，开始今天的英语小挑战</h2>
+        <p>每一关都包含句子匹配、翻译选择和动画观看三个环节。</p>
+    </div>
+    <a class="primary-btn" href="{{ url_for('settings') }}">管理关卡内容</a>
+</section>
+
+<section class="card-grid">
+    {% for level in levels %}
+    <article class="card">
+        <span class="card-tag">第 {{ level.id }} 关</span>
+        <h3>{{ level.title }}</h3>
+        <p class="english-preview">{{ level.english_text }}</p>
+        <p>累计挑战 {{ level.attempts or 0 }} 次，成功 {{ level.completions or 0 }} 次。</p>
+        <a class="primary-btn" href="{{ url_for('level_detail', level_id=level.id) }}">进入关卡</a>
+    </article>
+    {% endfor %}
+</section>
+{% endblock %}

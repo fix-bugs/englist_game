@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}{{ level.title }}{% endblock %}
+{% block content %}
+<section class="detail-header">
+    <div>
+        <p class="eyebrow">Learning Level</p>
+        <h2>{{ level.title }}</h2>
+        <p>按顺序完成三块内容：句子匹配、翻译选择、动画观看。</p>
+    </div>
+    <a class="secondary-btn" href="{{ url_for('home') }}">返回关卡列表</a>
+</section>
+
+<section class="stage-layout">
+    <article class="stage-card {% if state.stage_one_passed %}passed{% endif %}">
+        <div class="stage-title-row">
+            <h3>第一块：句子匹配</h3>
+            <span class="stage-state {% if state.stage_one_passed %}done{% endif %}">
+                {% if state.stage_one_passed %}已通过{% else %}进行中{% endif %}
+            </span>
+        </div>
+        <p class="prompt-box">{{ level.english_text }}</p>
+        <form method="post">
+            <input type="hidden" name="action" value="check_sentence">
+            <label for="user_answer">请输入或语音录入你看到的英语句子</label>
+            <textarea id="user_answer" name="user_answer" rows="3" placeholder="例如：Hello, my name is Tom.">{{ state.user_answer }}</textarea>
+            <div class="inline-actions">
+                <button type="button" class="secondary-btn" data-speech-target="user_answer">语音录入</button>
+                <button type="submit" class="primary-btn">检查答案</button>
+            </div>
+        </form>
+    </article>
+
+    <article class="stage-card {% if state.stage_two_passed %}passed{% endif %} {% if not state.stage_one_passed %}locked{% endif %}">
+        <div class="stage-title-row">
+            <h3>第二块：翻译选择</h3>
+            <span class="stage-state {% if state.stage_two_passed %}done{% endif %}">
+                {% if state.stage_two_passed %}已通过{% elif state.stage_one_passed %}可作答{% else %}未解锁{% endif %}
+            </span>
+        </div>
+        <p>请选择句子 <strong>{{ level.english_text }}</strong> 的正确翻译。</p>
+        <form method="post">
+            <input type="hidden" name="action" value="check_option">
+            <input type="hidden" name="stage_one_passed" value="{{ 'true' if state.stage_one_passed else 'false' }}">
+            <input type="hidden" name="user_answer" value="{{ state.user_answer }}">
+            <div class="option-list">
+                {% for option in level.options %}
+                <label class="option-item">
+                    <input type="radio" name="selected_option" value="{{ option }}" {% if state.selected_option == option %}checked{% endif %} {% if not state.stage_one_passed %}disabled{% endif %}>
+                    <span>{{ option }}</span>
+                </label>
+                {% endfor %}
+            </div>
+            <button type="submit" class="primary-btn" {% if not state.stage_one_passed %}disabled{% endif %}>提交选择</button>
+        </form>
+        {% if not level.has_video and state.stage_two_passed %}
+        <div class="inline-actions complete-row">
+            <form method="post">
+                <input type="hidden" name="action" value="finish_level">
+                <input type="hidden" name="stage_one_passed" value="true">
+                <input type="hidden" name="stage_two_passed" value="true">
+                <input type="hidden" name="user_answer" value="{{ state.user_answer }}">
+                <input type="hidden" name="selected_option" value="{{ state.selected_option }}">
+                <button type="submit" class="primary-btn">完成本关并保存记录</button>
+            </form>
+        </div>
+        {% endif %}
+    </article>
+
+    {% if level.has_video %}
+    <article class="stage-card {% if state.stage_two_passed %}passed{% endif %} {% if not state.stage_two_passed %}locked{% endif %}">
+        <div class="stage-title-row">
+            <h3>第三块：动画片</h3>
+            <span class="stage-state {% if state.stage_two_passed %}done{% endif %}">
+            {% if state.stage_two_passed %}已解锁{% else %}未解锁{% endif %}
+            </span>
+        </div>
+        <p>完成前两部分后，可以观看本关配套动画视频。</p>
+        {% if state.stage_two_passed %}
+        <div class="video-frame">
+            <iframe src="{{ level.video_url }}" title="{{ level.title }}" allowfullscreen></iframe>
+        </div>
+        <form method="post">
+            <input type="hidden" name="action" value="finish_level">
+            <input type="hidden" name="stage_one_passed" value="true">
+            <input type="hidden" name="stage_two_passed" value="true">
+            <input type="hidden" name="user_answer" value="{{ state.user_answer }}">
+            <input type="hidden" name="selected_option" value="{{ state.selected_option }}">
+            <button type="submit" class="primary-btn">完成本关并保存记录</button>
+        </form>
+        {% else %}
+        <div class="placeholder-box">请先完成前两块内容。</div>
+        {% endif %}
+    </article>
+    {% endif %}
+</section>
+
+<script src="{{ url_for('static', filename='speech.js') }}"></script>
+{% endblock %}

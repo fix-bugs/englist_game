@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}儿童英语闯关{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="brand">
+            <span class="brand-badge">ABC</span>
+            <div>
+                <h1>儿童英语闯关乐园</h1>
+                <p>边学边玩，完成听说读看四步挑战</p>
+            </div>
+        </div>
+        <nav class="site-nav">
+            <a href="{{ url_for('home') }}">关卡</a>
+            <a href="{{ url_for('progress_list') }}">闯关记录</a>
+            <a href="{{ url_for('settings') }}">设置</a>
+        </nav>
+    </header>
+
+    <main class="page-shell">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <section class="flash-stack">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </section>
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

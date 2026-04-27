@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}闯关记录{% endblock %}
+{% block content %}
+<section class="detail-header">
+    <div>
+        <p class="eyebrow">Progress</p>
+        <h2>儿童闯关记录</h2>
+        <p>查看所有关卡的挑战情况，并进入每个关卡的详细记录。</p>
+    </div>
+</section>
+
+<section class="table-card">
+    <table>
+        <thead>
+            <tr>
+                <th>关卡</th>
+                <th>英语内容</th>
+                <th>挑战次数</th>
+                <th>成功次数</th>
+                <th>最近挑战时间</th>
+                <th>详情</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for level in levels %}
+            <tr>
+                <td>{{ level.title }}</td>
+                <td>{{ level.english_text }}</td>
+                <td>{{ level.attempts or 0 }}</td>
+                <td>{{ level.completions or 0 }}</td>
+                <td>{{ level.last_played or '暂无记录' }}</td>
+                <td><a class="table-link" href="{{ url_for('progress_detail', level_id=level.id) }}">查看详情</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}
