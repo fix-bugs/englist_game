@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 import sqlite3
 from datetime import datetime
 from pathlib import Path
@@ -109,7 +110,11 @@ def seed_levels(db: sqlite3.Connection) -> None:
 
 
 def normalize_text(value: str) -> str:
-    return " ".join(value.strip().lower().split())
+    # 替换所有非字母数字字符为空格，以忽略标点符号
+    # 使用正则表达式替换 [^a-zA-Z0-9\s] 为空格
+    # 这样可以处理 "I'm" -> "I m" 和 "Hello, world" -> "Hello world"
+    cleaned = re.sub(r"[^a-zA-Z0-9\s]", " ", value)
+    return " ".join(cleaned.lower().split())
 
 
 def fetch_levels() -> list[dict[str, Any]]:

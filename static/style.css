@@ -137,6 +137,7 @@ a {
     padding: 24px;
 }
 
+.card.completed,
 .stage-card.passed {
     background: linear-gradient(180deg, rgba(221, 248, 230, 0.98) 0%, rgba(202, 240, 214, 0.98) 100%);
     border-color: rgba(19, 138, 80, 0.28);

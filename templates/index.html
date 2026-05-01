@@ -12,7 +12,7 @@
 
 <section class="card-grid">
     {% for level in levels %}
-    <article class="card">
+    <article class="card {% if level.completions and level.completions > 0 %}completed{% endif %}">
         <span class="card-tag">第 {{ level.id }} 关</span>
         <h3>{{ level.title }}</h3>
         <p class="english-preview">{{ level.english_text }}</p>
